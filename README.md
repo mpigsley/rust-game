@@ -2,7 +2,7 @@
 
 Just playing around and learning rust. Nothing to see here.
 
-# Development
+## Development
 
 Check out [cargo](https://doc.rust-lang.org/cargo/) for more information and [rustfmt](https://github.com/rust-lang-nursery/rustfmt) for automatic code formatting.
 
