@@ -1,11 +1,6 @@
 ## Rust Game
 
-Work in progress. Some gameplay ideas:
-
-* Turn-based, isometric battles in randomly generated environments
-* D&D/OGL type character creation
-* Randomly generated maps, cities, quests, etc.
-* Will take some pieces of the roguelike formula
+Just playing around and learning rust. Nothing to see here.
 
 ## Development
 
