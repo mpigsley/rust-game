@@ -34,10 +34,12 @@ const GAME_MAP: [[u8; 28]; 20] = [
 
 const TILE_SIZE: f64 = 25.0;
 
+
 pub struct App {
     gl: GlGraphics, // OpenGL drawing backend.
     up: bool, down: bool, left: bool, right: bool, // direction indicators
-    px: f64, py: f64
+    px: f64, py: f64, // player position
+    pxd: f64, pyd: f64, // player deltas
 }
 
 impl App {
@@ -47,6 +49,12 @@ impl App {
         const WHITE: [f32; 4] = [1.0, 1.0, 1.0, 1.0];
         const GREY: [f32; 4] = [0.5, 0.5, 0.5, 1.0];
         const RED: [f32; 4] = [1.0, 0.0, 0.0, 1.0];
+
+        let px = self.px;
+        let py = self.py;
+
+        println!("px: {:?}", px);
+        println!("py: {:?}", py);
 
         self.gl.draw(args.viewport(), |c, gl| {
             clear(WHITE, gl);
@@ -61,19 +69,30 @@ impl App {
                 }
             }
             // print player
-            // let square = rectangle::square((self.px * TILE_SIZE) as f64, (self.py * TILE_SIZE) as f64, 25.0);
-            // rectangle(RED, square, c.transform, gl);
+            let player = rectangle::square((px * TILE_SIZE) as f64, (py * TILE_SIZE) as f64, TILE_SIZE);
+            rectangle(RED, player, c.transform, gl);
         });
     }
 
     fn update(&mut self, _args: &UpdateArgs) {
-        // println!("{:?}", args);
-
+        if self.up && self.py >= 0.0 {
+            self.py -= self.pyd;
+        }
+        if self.down && self.py <= 19.0 { 
+            self.py += self.pyd; 
+        }
+        if self.left && self.px >= 0.0 { 
+            self.px -= self.pxd; 
+        }
+        if self.right && self.px <= 27.0 { 
+            self.px += self.pxd; 
+        }
     }
+
     fn input(&mut self, _args: &ButtonArgs) {
-        println!("{:?}", _args.state);
-        println!("{:?}", _args.button);
-        println!("{:?}", _args.scancode);
+        // println!("{:?}", _args.state);
+        // println!("{:?}", _args.button);
+        // println!("{:?}", _args.scancode);
         match _args.button {
             Button::Keyboard(Key::Up) => {
                 self.up =_args.state == ButtonState::Press;
@@ -108,7 +127,8 @@ fn main() {
     let mut app = App {
         gl: GlGraphics::new(opengl),
         up: false, down: false, left: false, right: false,
-        px: TILE_SIZE, py: (18.0 * TILE_SIZE) as f64,
+        px: 0.0, py: 18.0,
+        pxd: 0.5, pyd: 0.5,
     };
 
     let mut events = Events::new(EventSettings::new());
@@ -116,11 +136,9 @@ fn main() {
         if let Some(r) = e.render_args() {
             app.render(&r);
         }
-
         if let Some(u) = e.update_args() {
             app.update(&u);
         }
-
         if let Some(b) = e.button_args() {
             app.input(&b);
         }
